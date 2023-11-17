@@ -11,3 +11,25 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  remix-app:
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      SESSION_SECRET: fc3e372f97b70718d755bd0eb6635687
+    container_name: remix-app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 2806:3000
+    networks:
+      - app_network
+  
+networks:
+  app_network:
+    external: false
